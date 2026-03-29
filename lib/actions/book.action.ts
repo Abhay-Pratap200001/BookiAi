@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { connectToDatabase } from "@/database/mongoose";
 import { CreateBook, TextSegment } from "@/types";
@@ -14,9 +14,12 @@ export const checkBookExists = async (title: string) => {
     if (existingBook) {
       return {
         exists: true,
-        data: serializeData(existingBook),
+        book: serializeData(existingBook),
       };
     }
+    return {
+      exists: false,
+    };
   } catch (error) {
     console.log("Error checking book exusts", error);
     return {
@@ -77,12 +80,21 @@ export const saveBookSegement = async (
     await BookSegment.insertMany(segmentsToInsert);
     await Book.findByIdAndUpdate(bookId, { totalSegments: segment.length });
     console.log("Book segment saved successfully");
+    return{
+      success: true,
+      data:{
+        segmentCreated: segment.length
+      }
+    }
   } catch (error) {
     console.log("Error while saving segement", error);
     await BookSegment.deleteMany({ bookId });
     await Book.findByIdAndDelete(bookId);
     console.log(
-      "Delete book segments and book due to failure to save segments...",
-    );
+      "Delete book segments and book due to failure to save segments...");
+    return{
+      success: false,
+      error: error
+    }
   }
 };

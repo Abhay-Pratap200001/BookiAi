@@ -28,5 +28,6 @@ export const UploadSchema = z.object({
         }, "Only .jpg, .jpeg, .png and .webp formats are supported."),
     title: z.string().min(1, "Title is required").max(100, "Title is too long"),
     author: z.string().min(1, "Author name is required").max(100, "Author name is too long"),
-    voice: z.string().min(1, "Please select a voice"),
+    persona: z.string().min(1, "Please select a voice"),
+    pdfFile: z.instanceof(File, {message: "PDF file is required"})
 });
