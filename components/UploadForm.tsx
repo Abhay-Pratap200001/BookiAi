@@ -21,8 +21,7 @@ import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_VOICE,
 } from "@/lib/constant";
-import FileUploader from "./FileUploader ";
-import VoiceSelector from "./VoiceSelector ";
+
 import LoadingOverlay from "./LoadingOverlay";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
@@ -34,6 +33,9 @@ import {
 import { useRouter } from "next/navigation";
 import { parsePDFFile } from "@/lib/utils";
 import { upload } from "@vercel/blob/client";
+import FileUploader from "./FileUploader ";
+import VoiceSelector from "./VoiceSelector ";
+
 
 const UploadForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +46,7 @@ const UploadForm = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
+  
   const form = useForm<BookUploadFormValues>({
     resolver: zodResolver(UploadSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ const UploadForm = () => {
       }
 
       const fileTitle = data.title.replace(/\s+/g, "-").toLowerCase();
-      const pdfFile = data.pdfFile[0];
+      const pdfFile = data.pdfFile;
       const parsedPDF = await parsePDFFile(pdfFile);
       if (parsedPDF.content.length === 0) {
         toast.error(
@@ -88,7 +90,7 @@ const UploadForm = () => {
 
       let coverUrl: string;
 
-      if (data.coverImage && data.coverImage > 0) {
+      if (data.coverImage && data.coverImage.length > 0) {
         const coverFile = data.coverImage[0];
         const uploadedCoverBlob = await upload(
           `${fileTitle}_cover.png`,
@@ -160,7 +162,7 @@ const UploadForm = () => {
             {/* 1. PDF File Upload */}
             <FileUploader
               control={form.control}
-              name="bookFile"
+              name="pdfFile"
               label="Book PDF File"
               acceptTypes={ACCEPTED_PDF_TYPES}
               icon={Upload}

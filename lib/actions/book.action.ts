@@ -6,6 +6,8 @@ import { generateSlug, serializeData } from "../utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 
+// export const getAll
+
 export const checkBookExists = async (title: string) => {
   try {
     await connectToDatabase();
@@ -28,6 +30,7 @@ export const checkBookExists = async (title: string) => {
     };
   }
 };
+
 
 export const createBook = async (data: CreateBook) => {
   try {
